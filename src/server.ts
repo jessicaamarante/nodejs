@@ -1,11 +1,11 @@
-import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod';
+import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import fastify from "fastify";
 import { createTrip } from "./routes/create-trip";
 
 const app = fastify()
 
-app.setValidatorCompiler(validatorCompilerlerrCompiler);
-app.setSerializerCompiler(serializerCompilererCompiler);
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
 
 app.register(createTrip)
 
