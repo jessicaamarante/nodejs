@@ -4,6 +4,7 @@ import { z } from 'zod' // use to schema validate
 import { prisma } from "../lib/prisma"
 import { dayjs } from "../lib/dayjs"
 import { getMailClient } from "../lib/mail"
+import nodemailer from 'nodemailer'
 
 export async function confirmTrip(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/confirm', {
@@ -18,6 +19,13 @@ export async function confirmTrip(app: FastifyInstance) {
       const trip = await prisma.trip.findUnique({ // consulta se existe alguma viagem para esse tripId
         where: {
           id: tripId,
+        },
+        include: {
+          participants: {
+            where: {
+              is_owner: false,
+            }
+          }
         }
       })
 
