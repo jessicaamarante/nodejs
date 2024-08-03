@@ -47,11 +47,42 @@ export async function confirmTrip(app: FastifyInstance) {
 
 		  const formattedEndDate = dayjs(trip.ends_at).format('LL')
 
-		  const confirmationLink = `http://localhost:3333/trips/${trip.id}/confirm/ID_DO_PARTICIPANTE`
-
 		  const mail = await getMailClient()
 
-      return { tripId: request.params.tripId }
+      // Promise.all espera um array de Promise
+      // o map cria o array
+      //  e o async vai fazer com que esse array vire um array de promises
+      await Promise.all(
+        trip.participants.map(async (participant) => {
+          const confirmationLink = `http://localhost:3333/trips/${trip.id}/confirm/${participant.id}`
+
+          const message = await mail.sendMail({
+            from: {
+              name: 'equipe plann.er',
+              address: 'test@plann.er',
+            },
+            to: participant.email,
+            subject: `Confirme sua presença na viagem para ${trip.destination} em ${formattedStartDate}`,
+            html: `
+              <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
+                <p>Você Você foi convidado para participar de uma viagem para <strong>${trip.destination}</strong> nas datas de <strong>${formattedStartDate}</strong> até <strong>${formattedEndDate}</strong>.</p>
+                <p></p>
+                <p>Para confirmar sua presença na viagem, clique no link abaixo:</p>
+                <p></p>
+                <p>
+                    <a href="${confirmationLink}">Confirmar viagem</a>
+                </p>
+                <p></p>
+                <p>Caso você não saiba do que se trata esse email, apenas ignore o email.</p>
+            </div>
+            `.trim()
+          })
+
+          console.log(nodemailer.getTestMessageUrl(message))
+        })
+      )
+
+      return reply.redirect(`http://localhost:3000/trips/${tripId}`)
     }
   )
 }
