@@ -1,9 +1,10 @@
 ## NLW Journey - plann.er
 
-This is a backend project to learn about nodejs. This project ideia is trip manager, we can create a trip to expecific date and invite to participants.
+This is a backend project to learn about Node.js. The project idea is a trip manager where we can create a trip for a specific date and invite participants.
 
-to run use: <code>npm run dev</code>
+## Tips
+run project: <code>npm run dev</code>
 
-to open DB interface:  <code>npx prisma studio</code>
+open DB interface:  <code>npx prisma studio</code>
 
-to run migrations after change schema file: <code>npx prisma migrate dev</code>
+run migrations after change schema file: <code>npx prisma migrate dev</code>
