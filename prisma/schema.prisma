@@ -11,13 +11,16 @@ datasource db {
 }
 
 model Trip {
-  id           String        @id @default(uuid())
+  id           String   @id @default(uuid())
   destination  String
   starts_at    DateTime
   ends_at      DateTime
-  is_confirmed Boolean       @default(false)
-  created_at   DateTime      @default(now())
+  is_confirmed Boolean  @default(false)
+  created_at   DateTime @default(now())
+
   participants Participant[] // uma trip pode ter varios participants
+  activities   Activity[]
+  links         Link[]
 
   @@map("trips") // to rename table
 }
@@ -28,9 +31,32 @@ model Participant {
   email        String
   is_confirmed Boolean @default(false)
   is_owner     Boolean @default(false)
-  trip_id      String
+
   // Criação do relacionamento entre Participant e Trip, isso eh feito pelo prisma magicamente quando passamos trip Trip(model)
-  trip         Trip    @relation(fields: [trip_id], references: [id])
+  trip_id String
+  trip    Trip   @relation(fields: [trip_id], references: [id])
 
   @@map("participants")
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  title     String
+  occurs_at DateTime
+
+  trip_id String
+  trip    Trip   @relation(fields: [trip_id], references: [id])
+
+  @@map("activities")
+}
+
+model Link {
+  id    String @id @default(uuid())
+  title String
+  url   String
+
+  trip_id String
+  trip    Trip   @relation(fields: [trip_id], references: [id])
+
+  @@map("links")
 }
